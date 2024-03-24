@@ -1,5 +1,5 @@
 (executable
  (public_name acmebank)
  (name main)
- (libraries dream)
+ (libraries caqti-driver-postgresql dream uuidm)
  (preprocess (pps lwt_ppx ppx_yojson_conv)))
