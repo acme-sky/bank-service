@@ -15,10 +15,13 @@ type t = {
 let create =
   let query =
     let open Caqti_request.Infix in
-    (T.(tup3 string float string) ->! T.(tup4 string string float string))
+    (T.(tup3 string float string)
+    ->! T.(
+          tup2 string
+            (tup2 string (tup2 float (tup2 string (tup2 bool string))))))
       {|
       INSERT INTO payment (owner, amount, description) VALUES ($1, $2, $3)
-      RETURNING id, owner, amount, created_at
+      RETURNING id, owner, amount, description, paid, created_at
       |}
   in
   fun (payment : t) (module Db : DB) ->
@@ -30,9 +33,12 @@ let create =
 let find =
   let query =
     let open Caqti_request.Infix in
-    (T.string ->? T.(tup4 string string float string))
+    (T.string
+    ->? T.(
+          tup2 string
+            (tup2 string (tup2 float (tup2 string (tup2 bool string))))))
       {|
-      SELECT id, owner, amount, created_at FROM payment WHERE id = $1
+      SELECT id, owner, amount, description, paid, created_at FROM payment WHERE id = $1
       |}
   in
   fun (id : string) (module Db : DB) ->

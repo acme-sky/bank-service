@@ -5,6 +5,8 @@ type payment_creation = {
   id : string;
   owner : string;
   amount : float;
+  description : string;
+  paid : bool;
   created_at : string;
 }
 [@@deriving yojson]
@@ -18,7 +20,8 @@ let post_payments request =
   let%lwt payment = Dream.sql request (Payment.create payment_create_obj) in
 
   let response =
-    (fun (id, owner, amount, created_at) -> {id; owner; amount; created_at})
+    (fun (id, (owner, (amount, (description, (paid, created_at))))) ->
+      {id; owner; amount; description; paid; created_at})
       payment
   in
 
@@ -34,7 +37,8 @@ let get_payment request =
   match payment with
   | Some payment ->
     let response =
-      (fun (id, owner, amount, created_at) -> {id; owner; amount; created_at})
+      (fun (id, (owner, (amount, (description, (paid, created_at))))) ->
+        {id; owner; amount; description; paid; created_at})
         payment
     in
 
