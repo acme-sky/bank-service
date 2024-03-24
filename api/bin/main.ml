@@ -1,11 +1,6 @@
 module Payment = Models.Payment
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
-module type DB = Caqti_lwt.CONNECTION
-
-module R = Caqti_request
-module T = Caqti_type
-
 type payment_creation = {
   id : string;
   owner : string;
