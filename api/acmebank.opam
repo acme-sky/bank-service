@@ -7,9 +7,15 @@ homepage: "https://github.com/acme-sky/bank-service"
 doc: "https://acme-sky.github.io/docs"
 bug-reports: "https://github.com/acme-sky/bank-service/issues"
 depends: [
-  "ocaml"
+  "dream"
   "dune" {>= "3.14"}
+  "ocaml" {>= "5.0.0"}
   "odoc" {with-doc}
+  "dream" {>= "1.0.0~alpha5"}
+  "caqti" {>= "1.8.0"}
+  "caqti-lwt"
+  "caqti-driver-postgresql"
+  "ppx_yojson_conv"
 ]
 build: [
   ["dune" "subst"] {dev}
