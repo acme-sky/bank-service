@@ -26,3 +26,15 @@ let create =
       Db.find query (payment.owner, payment.amount, payment.description)
     in
     Caqti_lwt.or_fail result
+
+let find =
+  let query =
+    let open Caqti_request.Infix in
+    (T.string ->? T.(tup4 string string float string))
+      {|
+      SELECT id, owner, amount, created_at FROM payment WHERE id = $1
+      |}
+  in
+  fun (id : string) (module Db : DB) ->
+    let%lwt result = Db.find_opt query id in
+    Caqti_lwt.or_fail result
