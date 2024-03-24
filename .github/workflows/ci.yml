@@ -20,7 +20,7 @@ jobs:
           ocaml-compiler: "5.1"
 
       - name: Install deps
-        run: opam install . --deps-only --with-test
+        run: sudo apt install -y libev-dev libpq-dev pkg-config && opam install . --deps-only --with-test
         working-directory: ./api
 
       - name: Build
