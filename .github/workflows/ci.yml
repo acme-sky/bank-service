@@ -1,0 +1,34 @@
+name: OCaml
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v4
+
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: "5.1"
+
+      - name: Install deps
+        run: opam install . --deps-only --with-test
+        working-directory: ./api
+
+      - name: Build
+        run: opam exec -- dune build
+        working-directory: ./api
+
+      - name: Test
+        run: opam exec -- dune runtest
+        working-directory: ./api
+
+
