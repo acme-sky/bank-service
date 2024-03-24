@@ -1,0 +1,4 @@
+root = true
+
+[*.ml]
+indent_size = 2
