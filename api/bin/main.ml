@@ -22,7 +22,9 @@ let post_payments request =
       payment
   in
 
-  yojson_of_payment_creation response |> Yojson.Safe.to_string |> Dream.json
+  yojson_of_payment_creation response
+  |> Yojson.Safe.to_string
+  |> Dream.json ~status:`Created
 
 let () =
   let postgres_url =
