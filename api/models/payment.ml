@@ -44,3 +44,15 @@ let find =
   fun (id : string) (module Db : DB) ->
     let%lwt result = Db.find_opt query id in
     Caqti_lwt.or_fail result
+
+let pay =
+  let query =
+    let open Caqti_request.Infix in
+    (T.string ->. T.unit)
+      {|
+      UPDATE payment SET paid = 't' WHERE id = $1
+      |}
+  in
+  fun (id : string) (module Db : DB) ->
+    let%lwt result = Db.exec query id in
+    Caqti_lwt.or_fail result

@@ -61,6 +61,18 @@ let get_payment request =
     yojson_of_payment_creation response |> Yojson.Safe.to_string |> Dream.json
   | None -> Dream.json ~status:`Not_Found ""
 
+let pay_payment request =
+  let payment_id = Dream.param request "id" in
+
+  let%lwt payment = Dream.sql request (Payment.find payment_id) in
+
+  match payment with
+  | Some _ ->
+    let%lwt () = Dream.sql request (Payment.pay payment_id) in
+
+    Dream.json ~status:`OK ""
+  | None -> Dream.json ~status:`Not_Found ""
+
 let () =
   let postgres_url =
     match Sys.getenv_opt "DATABASE_URL" with
@@ -77,5 +89,9 @@ let () =
        [
          Dream.get "/" (fun _ -> Dream.html "hello world");
          Dream.scope "/payments" []
-           [Dream.post "/" post_payments; Dream.get "/:id/" get_payment];
+           [
+             Dream.post "/" post_payments;
+             Dream.get "/:id/" get_payment;
+             Dream.post "/:id/pay/" pay_payment;
+           ];
        ]
