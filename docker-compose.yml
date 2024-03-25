@@ -10,6 +10,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./api/schema:/docker-entrypoint-initdb.d
     networks:
       - default
 
@@ -23,6 +24,12 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+
+  bankservice-ui:
+    image: acmesky-bankservice-ui
+    container_name: bankservice-ui
+    ports:
+      - "8081:80"
 
 volumes:
   postgres-data:
