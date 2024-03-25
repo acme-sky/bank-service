@@ -21,12 +21,15 @@ const errors = ref({})
 const success_alert = ref(false)
 const error_alert = ref(false)
 
-onMounted(() => {
+onMounted(async () => {
   const payment_id = route.query.id
   if (!payment_id) {
     router.push('/error')
   } else {
-    payment.get(payment_id)
+    await payment.get(payment_id).catch((e) => {
+      router.push('/error')
+    })
+    if (payment.data.paid) router.push('/expired')
   }
 })
 
