@@ -62,9 +62,9 @@ function save(event) {
       <template #header>
         <img src="@/assets/logo.png" alt="logo" class="logo" />
         <div class="msg">
-          <Message severity="success" v-if="success_alert"
-            >Success! You will be redirect soon.</Message
-          >
+          <Message severity="success" v-if="success_alert">
+            Success! You will be redirect soon.
+          </Message>
           <Message severity="error" v-if="error_alert">Error! Try again.</Message>
         </div>
       </template>
