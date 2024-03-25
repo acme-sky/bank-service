@@ -15,3 +15,38 @@ main {
   justify-items: center;
   grid-template-columns: 45% 10% 45%;
 }
+
+.input-g {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.input-g input {
+  width: 100%;
+}
+.p-inputgroup {
+  margin-bottom: 1em;
+}
+
+.amount {
+  text-align: center;
+}
+
+#pay-now {
+  display: block;
+  margin: 0 auto;
+}
+
+input.error {
+  border-color: #e80000;
+}
+span.error {
+  color: #e80000;
+}
+
+.msg {
+  display: block;
+  width: 90%;
+  margin: 30px auto 0;
+}
