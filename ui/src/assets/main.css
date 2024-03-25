@@ -5,8 +5,8 @@ main {
 }
 
 .logo {
-    margin: 30px auto;
-    display: block;
+  margin: 30px auto;
+  display: block;
 }
 
 .grid {
@@ -19,7 +19,7 @@ main {
 .input-g {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 
 .input-g input {
