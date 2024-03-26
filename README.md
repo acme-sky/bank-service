@@ -50,6 +50,8 @@ Content-Type: application/json
 A simple frontend built in Vue+Vite. You must define `VITE_BACKEND_URL` which
 points to the API.
 
+![Screnshot](./assets/screenshot.png)
+
 ## Build
 
 > [!TIP]
