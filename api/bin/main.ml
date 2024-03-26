@@ -27,23 +27,35 @@ let cors_middleware handler req =
   |> ignore;
   Lwt.return res
 
+let is_logged req =
+  match Dream.header req "X-API-TOKEN" with
+  | Some x -> x = Sys.getenv "API_TOKEN"
+  | None ->
+    Dream.log "X-API-TOKEN not defined";
+    false
+
 let post_payments request =
-  let%lwt body = Dream.body request in
+  let is_logged = is_logged request in
 
-  let payment_create_obj =
-    body |> Yojson.Safe.from_string |> Payment.t_of_yojson
-  in
-  let%lwt payment = Dream.sql request (Payment.create payment_create_obj) in
+  if not is_logged then
+    Dream.json ~status:`Unauthorized ""
+  else
+    let%lwt body = Dream.body request in
 
-  let response =
-    (fun (id, (owner, (amount, (description, (paid, created_at))))) ->
-      {id; owner; amount; description; paid; created_at})
-      payment
-  in
+    let payment_create_obj =
+      body |> Yojson.Safe.from_string |> Payment.t_of_yojson
+    in
+    let%lwt payment = Dream.sql request (Payment.create payment_create_obj) in
 
-  yojson_of_payment_creation response
-  |> Yojson.Safe.to_string
-  |> Dream.json ~status:`Created
+    let response =
+      (fun (id, (owner, (amount, (description, (paid, created_at))))) ->
+        {id; owner; amount; description; paid; created_at})
+        payment
+    in
+
+    yojson_of_payment_creation response
+    |> Yojson.Safe.to_string
+    |> Dream.json ~status:`Created
 
 let get_payment request =
   let payment_id = Dream.param request "id" in

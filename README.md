@@ -9,8 +9,10 @@ It exposes a REST API with three endpoints:
 - `POST /payments/` used to create new payments. An example is:
 
 ```
-curl -X POST http://localhost:8080/payments/ -H 'content-type: application/json' -H 'accept: application/json, */*;q=0.5' -d '{"owner":"John Doe","amount":30.4,"description":"Flight to CTA"}'
+curl -X POST http://localhost:8080/payments/ -H 'x-api-token: token' -H 'content-type: application/json' -H 'accept: application/json, */*;q=0.5' -d '{"owner":"John Doe","amount":30.4,"description":"Flight to CTA"}'
 ```
+
+You have to know the API token and pass it by `X-API-TOKEN` header.
 
 - `GET /payments/<id>/` used to get info about a payment. An example is:
 
@@ -53,13 +55,14 @@ points to the API.
 > [!TIP]
 > You can use `./build.sh` for a step-by-step guide for deploying.
 
+You need to set up
 
-You need to set up 
 ```
 POSTGRES_USER=user
 POSTGRES_PASSWORD=pass
 POSTGRES_DB=db
 DATABASE_URL=postgres://user:pass@bankservice-postgres:5432/db
+API_TOKEN=token
 ```
 
 and build

@@ -8,6 +8,7 @@ Steps for development
 
 3. Build `opam exec -- dune build`
 
-4. Set up `DATABASE_URL` variable. It should be a PostgreSQL uri.
+4. Set up `DATABASE_URL` variable: it should be a PostgreSQL uri. Set up a
+   `API_TOKEN` used to create new payments.
 
 5. Run `dune run acmebank`
