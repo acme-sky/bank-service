@@ -42,7 +42,7 @@ Content-Type: application/json
   card information are ignored. Payload can be empty.
 
 > [!NOTE]
-> Do not forget to create a PostgreSQL database and link it to the API through
+> Do not forget to create a PostgreSQL database and link it to the API via
 > `DATABASE_URL` environment variable.
 
 ## `./ui` folder
@@ -55,7 +55,7 @@ points to the API.
 ## Build
 
 > [!TIP]
-> You can use `./build.sh` for a step-by-step guide for deploying.
+> You can use `./build.sh` for a step-by-step setup guide for deploying.
 
 You need to set up
 
