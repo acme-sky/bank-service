@@ -5,6 +5,7 @@ type payment_creation = {
   owner : string;
   amount : float;
   description : string;
+  callback : string option;
   paid : bool;
   created_at : string;
 }

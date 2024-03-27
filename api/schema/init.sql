@@ -11,6 +11,6 @@ CREATE TABLE payment (
   amount FLOAT NOT NULL,
   description VARCHAR NOT NULL,
   paid BOOLEAN DEFAULT false NOT NULL,
+  callback TEXT,
   created_at TIMESTAMP DEFAULT NOW() NOT NULL
 );
-

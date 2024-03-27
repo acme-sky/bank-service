@@ -1,5 +1,5 @@
 (library
    (name routes)
-   (libraries dream models)
+   (libraries dream cohttp-lwt-unix models)
    (preprocess (pps lwt_ppx ppx_yojson_conv))
 )

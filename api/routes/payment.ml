@@ -1,11 +1,14 @@
 module Payment = Models.Payment
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
+open Cohttp
+open Lwt
 
 type payment_creation = {
   id : string;
   owner : string;
   amount : float;
   description : string;
+  callback : string option;
   paid : bool;
   created_at : string;
 }
@@ -32,8 +35,8 @@ let post request =
     let%lwt payment = Dream.sql request (Payment.create payment_create_obj) in
 
     let response =
-      (fun (id, (owner, (amount, (description, (paid, created_at))))) ->
-        {id; owner; amount; description; paid; created_at})
+      (fun (id, (owner, (amount, (description, (callback, (paid, created_at)))))) ->
+        {id; owner; amount; description; callback; paid; created_at})
         payment
     in
 
@@ -49,8 +52,8 @@ let get request =
   match payment with
   | Some payment ->
     let response =
-      (fun (id, (owner, (amount, (description, (paid, created_at))))) ->
-        {id; owner; amount; description; paid; created_at})
+      (fun (id, (owner, (amount, (description, (callback, (paid, created_at)))))) ->
+        {id; owner; amount; description; callback; paid; created_at})
         payment
     in
 
@@ -63,8 +66,23 @@ let pay request =
   let%lwt payment = Dream.sql request (Payment.find payment_id) in
 
   match payment with
-  | Some _ ->
+  | Some t -> (
+    let payment =
+      (fun (id, (owner, (amount, (description, (callback, (paid, created_at)))))) ->
+        {id; owner; amount; description; callback; paid; created_at})
+        t
+    in
     let%lwt () = Dream.sql request (Payment.pay payment_id) in
 
-    Dream.json ~status:`OK ""
+    (* FIXME: On error a payment should be refund *)
+    match payment.callback with
+    | Some callback -> (
+      try
+        Cohttp_lwt_unix.Client.post (Uri.of_string callback)
+        >>= fun (resp, _) ->
+        match resp |> Response.status |> Code.code_of_status with
+        | 200 -> Dream.json ~status:`OK ""
+        | _ -> Dream.json ~status:`Bad_Request ""
+      with _ -> Dream.json ~status:`Bad_Gateway "")
+    | None -> Dream.json ~status:`OK "")
   | None -> Dream.json ~status:`Not_Found ""

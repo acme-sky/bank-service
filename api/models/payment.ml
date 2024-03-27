@@ -9,24 +9,28 @@ type t = {
   owner : string;
   amount : float;
   description : string;
+  callback : string option;
 }
 [@@deriving yojson]
 
 let create =
   let query =
     let open Caqti_request.Infix in
-    (T.(tup3 string float string)
+    (T.(tup4 string float string (option string))
     ->! T.(
           tup2 string
-            (tup2 string (tup2 float (tup2 string (tup2 bool string))))))
+            (tup2 string
+               (tup2 float
+                  (tup2 string (tup2 (option string) (tup2 bool string)))))))
       {|
-      INSERT INTO payment (owner, amount, description) VALUES ($1, $2, $3)
-      RETURNING id, owner, amount, description, paid, created_at
+      INSERT INTO payment (owner, amount, description, callback) VALUES ($1, $2, $3, $4)
+      RETURNING id, owner, amount, description, callback, paid, created_at
       |}
   in
   fun (payment : t) (module Db : DB) ->
     let%lwt result =
-      Db.find query (payment.owner, payment.amount, payment.description)
+      Db.find query
+        (payment.owner, payment.amount, payment.description, payment.callback)
     in
     Caqti_lwt.or_fail result
 
@@ -36,9 +40,11 @@ let find =
     (T.string
     ->? T.(
           tup2 string
-            (tup2 string (tup2 float (tup2 string (tup2 bool string))))))
+            (tup2 string
+               (tup2 float
+                  (tup2 string (tup2 (option string) (tup2 bool string)))))))
       {|
-      SELECT id, owner, amount, description, paid, created_at FROM payment WHERE id = $1
+      SELECT id, owner, amount, description, callback, paid, created_at FROM payment WHERE id = $1
       |}
   in
   fun (id : string) (module Db : DB) ->
