@@ -15,6 +15,7 @@ depends: [
   "caqti-lwt"
   "caqti-driver-postgresql"
   "ppx_yojson_conv"
+  "cohttp-lwt-unix"
 ]
 build: [
   ["dune" "subst"] {dev}

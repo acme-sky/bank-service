@@ -1,4 +1,5 @@
 module Payment = Models.Payment
+module Cors = Lib.Cors
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
 type payment_creation = {
@@ -10,22 +11,6 @@ type payment_creation = {
   created_at : string;
 }
 [@@deriving yojson]
-
-let cors_middleware handler req =
-  let handlers =
-    [
-      ("Allow", "OPTIONS, GET, HEAD, POST");
-      ("Access-Control-Allow-Origin", "*");
-      ("Access-Control-Allow-Methods", "OPTIONS, GET, HEAD, POST");
-      ("Access-Control-Allow-Headers", "Content-Type");
-      ("Access-Control-Max-Age", "86400");
-    ]
-  in
-  let%lwt res = handler req in
-  handlers
-  |> List.map (fun (key, value) -> Dream.add_header res key value)
-  |> ignore;
-  Lwt.return res
 
 let is_logged req =
   match Dream.header req "X-API-TOKEN" with
@@ -94,7 +79,7 @@ let () =
 
   Dream.run ~interface:"0.0.0.0"
   @@ Dream.logger
-  @@ cors_middleware
+  @@ Cors.middleware
   @@ Dream.sql_pool postgres_url
   @@ Dream.sql_sessions
   @@ Dream.router
