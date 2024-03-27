@@ -1,5 +1,5 @@
 (executable
  (public_name acmebank)
  (name main)
- (libraries caqti-driver-postgresql dream models lib)
+ (libraries caqti-driver-postgresql dream models lib routes)
  (preprocess (pps lwt_ppx ppx_yojson_conv)))

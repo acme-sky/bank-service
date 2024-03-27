@@ -1,0 +1,5 @@
+(library
+   (name routes)
+   (libraries dream models)
+   (preprocess (pps lwt_ppx ppx_yojson_conv))
+)
