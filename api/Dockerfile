@@ -3,7 +3,7 @@ WORKDIR /build
 
 # Install dependencies.
 RUN sudo apt-get update
-RUN sudo apt-get install -y libev-dev libpq-dev pkg-config
+RUN sudo apt-get install -y libev-dev libpq-dev pkg-config libgmp-dev
 
 COPY . .
 
