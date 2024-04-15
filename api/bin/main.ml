@@ -16,7 +16,7 @@ let () =
   @@ Dream.sql_sessions
   @@ Dream.router
        [
-         Dream.get "/" (fun _ -> Dream.html "hello world");
+         Dream.get "/**" (Dream.static "static");
          Dream.scope "/payments" []
            [
              Dream.post "/" PaymentRoute.post;

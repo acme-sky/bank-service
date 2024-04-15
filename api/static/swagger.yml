@@ -1,0 +1,119 @@
+openapi: 3.0.3
+info:
+  title: ACMEBank API
+  description: |-
+    This is the description for the API used by ACMESky for payments management.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /payments/:
+    post:
+      tags:
+        - Payments
+      summary: Add a new payment
+      description: Add a new payment
+      operationId: addPayment
+      requestBody:
+        description: Create a new payment
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Payment"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+        "400":
+          description: Invalid input
+      security:
+        - api_key: []
+  /payments/{paymentId}:
+    get:
+      tags:
+        - Payments
+      summary: Get a payment
+      description: Get a payment
+      operationId: getayment
+      parameters:
+        - name: paymentId
+          in: path
+          description: ID of payment to return
+          required: true
+          schema:
+            type: integer
+            format: uuid
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+  /payments/{paymentId}/pay/:
+    post:
+      tags:
+        - Payments
+      summary: Pay a payment
+      description: Pay a payment
+      operationId: payPayment
+      parameters:
+        - name: paymentId
+          in: path
+          description: ID of payment to return
+          required: true
+          schema:
+            type: integer
+            format: uuid
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+        "400":
+          description: Invalid input
+      security:
+        - api_key: []
+components:
+  schemas:
+    Payment:
+      required:
+        - owner
+        - amount
+        - description
+      type: object
+      properties:
+        owner:
+          type: string
+          example: "Mario Rossi"
+        amount:
+          type: float
+          example: 42.10
+        description:
+          type: string
+          example: "Flight to CPH"
+        callback:
+          type: string
+          example: "http://acmesky.cs.unibo.it/api/pay/42/"
+  requestBodies:
+    Payment:
+      description: Payment object that needs to be added to the store
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Payment"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Payment"
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_token
+      in: header
