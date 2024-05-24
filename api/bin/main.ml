@@ -16,11 +16,11 @@ let () =
   @@ Dream.sql_sessions
   @@ Dream.router
        [
-         Dream.get "/**" (Dream.static "static");
          Dream.scope "/payments" []
            [
              Dream.post "/" PaymentRoute.post;
              Dream.get "/:id/" PaymentRoute.get;
              Dream.post "/:id/pay/" PaymentRoute.pay;
            ];
+         Dream.get "/**" (Dream.static "static");
        ]
