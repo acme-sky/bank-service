@@ -17,6 +17,8 @@ services:
   bankservice-api:
     image: acmesky-bankservice-api
     container_name: bankservice-api
+    networks:
+      - acmesky
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - API_TOKEN=${API_TOKEN}
@@ -29,8 +31,12 @@ services:
   bankservice-ui:
     image: acmesky-bankservice-ui
     container_name: bankservice-ui
+    networks:
+      - acmesky
     ports:
       - "8081:80"
 
 volumes:
   postgres-data:
+  acmesky:
+    external: true
