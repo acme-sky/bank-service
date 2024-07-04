@@ -18,6 +18,7 @@ services:
     image: acmesky-bankservice-api
     container_name: bankservice-api
     networks:
+      - default
       - acmesky
     environment:
       - DATABASE_URL=${DATABASE_URL}
