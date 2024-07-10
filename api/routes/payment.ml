@@ -83,7 +83,8 @@ let pay request =
           match response |> Response.status |> Code.code_of_status with
           | 200 -> Dream.json ~status:`OK ""
           | _ -> Dream.json ~status:`Bad_Request "")
-        (fun _ ->
+        (fun e ->
+          Dream.log "%s %s" callback (Printexc.to_string e);
           let%lwt () = Dream.sql request (Payment.unpay payment_id) in
           Dream.json ~status:`Bad_Gateway "")
     | None -> Dream.json ~status:`OK "")
