@@ -45,7 +45,7 @@ Content-Type: application/json
 
 > [!NOTE]
 > Do not forget to create a PostgreSQL database and link it to the API via
-> `DATABASE_URL` environment variable.
+> `DATABASE_DSN` environment variable.
 
 ## `./ui` folder
 
