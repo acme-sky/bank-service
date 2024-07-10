@@ -1,14 +1,28 @@
-# API
+# ACME Sky - Bank Service API
 
-Steps for development
+This repo refers to the Bank service PAI used by ACME Sky.
 
-1. Install Linux deps `ocaml libev-dev libpq-dev pkg-config`
+## Build
 
-2. Install project deps `opam install --deps-only .`
+> [!TIP]
+> You can use `./build.sh` for a step-by-step setup guide for deploying.
 
-3. Build `opam exec -- dune build`
+You need to set up
 
-4. Set up `DATABASE_URL` variable: it should be a PostgreSQL uri. Set up a
-   `API_TOKEN` used to create new payments.
+```
+POSTGRES_USER=user
+POSTGRES_PASSWORD=pass
+POSTGRES_DB=db
+DATABASE_DSN="host=localhost user=user password=pass dbname=db port=5432"
+API_TOKEN=t0k3n
+```
 
-5. Run `dune run acmebank`
+and build
+
+```
+docker build -t acmesky-bankservice-api .
+```
+
+## Auth
+
+You need to pass `X-API-TOKEN` to create a new payment.

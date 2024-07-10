@@ -1,5 +1,0 @@
-(library
-   (name lib)
-   (libraries dream)
-   (preprocess (pps lwt_ppx))
-)

@@ -1,24 +1,26 @@
-FROM ocaml/opam:debian-12-ocaml-5.1 as build
-WORKDIR /build
+FROM golang:alpine AS builder
 
-# Install dependencies.
-RUN sudo apt-get update
-RUN sudo apt-get install -y libev-dev libpq-dev pkg-config libgmp-dev
+RUN apk --update add ca-certificates git
+
+WORKDIR /app
 
 COPY . .
+RUN go mod download
 
-RUN opam install --deps-only .
+RUN CGO_ENABLED=0 GOOS=linux go build cmd/main.go
 
-# Build project.
-RUN opam exec -- dune build
+# Run the exe file
+FROM scratch
+
+WORKDIR /app
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /app .
 
 
+EXPOSE 8080
 
-FROM debian:bookworm-slim as run
+ENV DATABASE_DSN="host=localhost user=user password=password dbname=acmebank port=5432"
+ENV API_TOKEN=""
 
-RUN apt-get update
-RUN apt-get install -y libev4 libpq5 libssl3
-
-COPY --from=build /build/_build/default/bin/main.exe /bin/acmebank
-
-ENTRYPOINT /bin/acmebank
+CMD ["./main"]

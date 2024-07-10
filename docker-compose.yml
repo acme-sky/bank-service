@@ -26,7 +26,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8080:8080"
+      - "9280:8080"
     restart: unless-stopped
 
   bankservice-ui:
@@ -35,7 +35,7 @@ services:
     networks:
       - acmesky
     ports:
-      - "8081:80"
+      - "9281:80"
 
 volumes:
   postgres-data:
