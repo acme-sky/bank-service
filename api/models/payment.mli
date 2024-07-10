@@ -27,3 +27,4 @@ val find :
   Lwt.t
 
 val pay : string -> (module DB) -> unit Lwt.t
+val unpay : string -> (module DB) -> unit Lwt.t

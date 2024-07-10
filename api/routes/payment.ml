@@ -1,7 +1,6 @@
 module Payment = Models.Payment
 open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 open Cohttp
-open Lwt
 
 type payment_creation = {
   id : string;
@@ -74,15 +73,18 @@ let pay request =
     in
     let%lwt () = Dream.sql request (Payment.pay payment_id) in
 
-    (* FIXME: On error a payment should be refund *)
     match payment.callback with
-    | Some callback -> (
-      try
-        Cohttp_lwt_unix.Client.post (Uri.of_string callback)
-        >>= fun (resp, _) ->
-        match resp |> Response.status |> Code.code_of_status with
-        | 200 -> Dream.json ~status:`OK ""
-        | _ -> Dream.json ~status:`Bad_Request ""
-      with _ -> Dream.json ~status:`Bad_Gateway "")
+    | Some callback ->
+      Lwt.catch
+        (fun () ->
+          let%lwt response, _ =
+            Cohttp_lwt_unix.Client.post (Uri.of_string callback)
+          in
+          match response |> Response.status |> Code.code_of_status with
+          | 200 -> Dream.json ~status:`OK ""
+          | _ -> Dream.json ~status:`Bad_Request "")
+        (fun _ ->
+          let%lwt () = Dream.sql request (Payment.unpay payment_id) in
+          Dream.json ~status:`Bad_Gateway "")
     | None -> Dream.json ~status:`OK "")
   | None -> Dream.json ~status:`Not_Found ""

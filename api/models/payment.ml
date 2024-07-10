@@ -62,3 +62,15 @@ let pay =
   fun (id : string) (module Db : DB) ->
     let%lwt result = Db.exec query id in
     Caqti_lwt.or_fail result
+
+let unpay =
+  let query =
+    let open Caqti_request.Infix in
+    (T.string ->. T.unit)
+      {|
+      UPDATE payment SET paid = 'f' WHERE id = $1
+      |}
+  in
+  fun (id : string) (module Db : DB) ->
+    let%lwt result = Db.exec query id in
+    Caqti_lwt.or_fail result
